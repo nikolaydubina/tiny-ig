@@ -42,9 +42,9 @@ func main() {
 		log.Fatal(err)
 	}
 	for _, file := range files {
-		params.Photos = append(params.Photos, PhotoParams{
+		params.Photos = append([]PhotoParams{{
 			Path: strings.Join([]string{"", photosDir, file.Name()}, "/"),
-		})
+		}}, params.Photos...)
 	}
 
 	parsedTemplate, err := template.New("gallery").Parse(galleryHTMLTemplate)
