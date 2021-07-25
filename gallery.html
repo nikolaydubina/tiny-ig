@@ -1,0 +1,7 @@
+<div align="center">
+    {{range $i, $q:= $.Photos}}    
+    <a href="{{$q.Path}}" target="_blank" style="display: contents;">
+    <img src="{{$q.Path}}" style="margin: 8px; object-fit: cover; width: 292px; height: 292px;">
+    </a>
+	{{end}}
+</div>    
