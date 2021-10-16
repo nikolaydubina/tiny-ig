@@ -1,23 +1,45 @@
 package main
 
 import (
-	_ "embed"
 	"flag"
+	"fmt"
 	"log"
 	"os"
+	"sort"
 	"strings"
-	"text/template"
 )
 
-//go:embed gallery.html
-var galleryHTMLTemplate string
-
-type PhotoParams struct {
-	Path string
+type Photo struct {
+	Path   string
+	Width  int
+	Height int
 }
 
-type GalleryParams struct {
-	Photos []PhotoParams
+func (p Photo) Render() string {
+	s := ""
+	s += fmt.Sprintf(`<a href="%s" target="_blank" style="display: contents;">`, p.Path) + "\n"
+	s += fmt.Sprintf(`<img src="%s" style="margin: 8px; object-fit: cover; width: %dpx; height: %dpx;" loading="lazy">`, p.Path, p.Width, p.Height) + "\n"
+	s += "</a>\n"
+	return s
+}
+
+type Gallery struct {
+	Photos []Photo
+}
+
+func (g Gallery) Render() string {
+	if len(g.Photos) == 0 {
+		return ""
+	}
+
+	s := ""
+	s += `<div align="center">` + "\n"
+	for _, p := range g.Photos {
+		s += p.Render() + "\n"
+	}
+	s += "</div>\n"
+
+	return s
 }
 
 func main() {
@@ -32,9 +54,7 @@ func main() {
 		log.Fatal("dir arg is missing")
 	}
 
-	params := GalleryParams{
-		Photos: []PhotoParams{},
-	}
+	gallery := Gallery{}
 
 	files, err := os.ReadDir(photosDir)
 	if err != nil {
@@ -42,14 +62,15 @@ func main() {
 	}
 	for _, file := range files {
 		path := strings.Join([]string{"", photosDir, file.Name()}, "/")
-		params.Photos = append(params.Photos, PhotoParams{Path: path})
+		photo := Photo{
+			Path:   path,
+			Width:  292,
+			Height: 292,
+		}
+		gallery.Photos = append(gallery.Photos, photo)
 	}
 
-	parsedTemplate, err := template.New("gallery").Parse(galleryHTMLTemplate)
-	if err != nil {
-		log.Fatal(err)
-	}
-	if err := parsedTemplate.Execute(os.Stdout, params); err != nil {
-		log.Fatal(err)
-	}
+	sort.Slice(gallery.Photos, func(i, j int) bool { return gallery.Photos[i].Path > gallery.Photos[j].Path })
+
+	os.Stdout.WriteString(gallery.Render())
 }
