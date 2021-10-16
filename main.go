@@ -1,13 +1,12 @@
 package main
 
 import (
+	_ "embed"
 	"flag"
 	"log"
 	"os"
 	"strings"
 	"text/template"
-
-	_ "embed"
 )
 
 //go:embed gallery.html
@@ -42,9 +41,8 @@ func main() {
 		log.Fatal(err)
 	}
 	for _, file := range files {
-		params.Photos = append([]PhotoParams{{
-			Path: strings.Join([]string{"", photosDir, file.Name()}, "/"),
-		}}, params.Photos...)
+		path := strings.Join([]string{"", photosDir, file.Name()}, "/")
+		params.Photos = append(params.Photos, PhotoParams{Path: path})
 	}
 
 	parsedTemplate, err := template.New("gallery").Parse(galleryHTMLTemplate)
