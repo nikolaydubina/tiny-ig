@@ -6,7 +6,6 @@ import (
 	"log"
 	"os"
 	"sort"
-	"strings"
 )
 
 type Photo struct {
@@ -45,9 +44,11 @@ func (g Gallery) Render() string {
 func main() {
 	var (
 		photosDir string
+                prefix string
 	)
 
 	flag.StringVar(&photosDir, "dir", "", "path to directory with photos")
+	flag.StringVar(&prefix, "prefix", "", "prefix for image URLs")
 	flag.Parse()
 
 	if photosDir == "" {
@@ -61,7 +62,7 @@ func main() {
 		log.Fatal(err)
 	}
 	for _, file := range files {
-		path := strings.Join([]string{"", photosDir, file.Name()}, "/")
+		path := prefix + file.Name()
 		photo := Photo{
 			Path:   path,
 			Width:  292,
