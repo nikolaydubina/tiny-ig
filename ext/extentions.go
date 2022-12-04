@@ -9,6 +9,7 @@ var imageExtensions = map[string]bool{
 
 var videoExtensions = map[string]bool{
 	"mov": true,
+	"mp4": true,
 }
 
 func IsImage(filename string) bool {
