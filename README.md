@@ -1,3 +1,5 @@
+https://go.dev/doc/install
+
 ```bash
 go install http://github.com/nikolaydubina/tiny-ig
 ```
