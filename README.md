@@ -1,7 +1,7 @@
 https://go.dev/doc/install
 
 ```bash
-go install http://github.com/nikolaydubina/tiny-ig
+go install github.com/nikolaydubina/tiny-ig@latest
 ```
 
 ```bash
